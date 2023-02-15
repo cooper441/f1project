@@ -7,6 +7,9 @@ class Team:
         self.Nat = str(Nat)
         self.PerformanceImpact = float(PerformanceImpact)
 
+    def __call__(self):
+        return self
+
 
 
 

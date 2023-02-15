@@ -13,6 +13,8 @@ class Driver:
         self.Racecraft = float(Racecraft)
         self.Awareness = float(Awareness)
         self.Pace = float(Pace)
+    def __call__(self):
+        return self
 
 
 def create_list(file):

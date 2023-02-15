@@ -3,6 +3,75 @@ import Team as tm
 import Driver as dr
 
 
+class Car:
+    def __init__(self, Driver, Chassis, BrakesPackage, AeroPackage, TyresPackage, OverallPerformance, OverallDamage,
+                 FuelLevel, Team):
+        self.Driver = Driver()
+        self.Chassis = Chassis()
+        self.BrakesPackage = BrakesPackage()
+        self.AeroPackage = AeroPackage()
+        self.TyresPackage = TyresPackage()
+        self.OverallPerformance = float(OverallPerformance)
+        self.OverallDamage = float(OverallDamage)
+        self.FuelLevel = float(FuelLevel)
+        self.Team = Team()
+
+    def __call__(self):
+        return self
+    @classmethod
+    def create_chassis(self):
+        obj = Chassis(0.0)
+        return obj
+    @classmethod
+    def create_front_wing(self):
+        obj = FrontWing(0.0)
+        return obj
+    @classmethod
+    def create_rear_wing(self):
+        obj = RearWing(0.0)
+        return obj
+
+    @classmethod
+    def create_body_aero(self):
+        obj = BodyAero(0.0)
+        return obj
+
+    @classmethod
+    def create_aero_package(self):
+        obj = AeroPackage(self.create_front_wing(), self.create_rear_wing(), self.create_body_aero())
+        return obj
+
+    @classmethod
+    def create_front_breaks(self):
+        obj = FrontBreaks(0.0, 0.0)
+        return obj
+
+    @classmethod
+    def create_rear_breaks(self):
+        obj = RearBreaks(0.0, 0.0)
+        return obj
+
+    @classmethod
+    def create_break_package(self):
+        obj = BreakPackage(self.create_front_breaks(), self.create_rear_breaks())
+        return obj
+
+    @classmethod
+    def create_rear_tyres(self):
+        obj = RearTyres(0.0, 0.0)
+        return obj
+
+    @classmethod
+    def create_front_tyres(self):
+        obj = FrontTyres(0.0, 0.0)
+        return obj
+
+    @classmethod
+    def create_tyres_package(self):
+        obj = TyresPackage(self.create_front_tyres(), self.create_rear_tyres())
+        return obj
+
+
 class RearTyres:
     def __init__(self, RearTyresPerformance, RearTyresTemp):
         self.RearTyresPerformance = float(RearTyresPerformance)
@@ -97,99 +166,3 @@ class AeroPackage:
 
     def __call__(self):
         return self
-
-
-class Car:
-    def __init__(self, Driver, Chassis, BrakesPackage, AeroPackage, TyresPackage, OverallPerformance, OverallDamage,
-                 FuelLevel, Team):
-        self.Driver = str(Driver)
-        self.Chassis = Chassis()
-        self.BrakesPackage = BrakesPackage()
-        self.AeroPackage = AeroPackage()
-        self.TyresPackage = TyresPackage()
-        self.OverallPerformance = float(OverallPerformance)
-        self.OverallDamage = float(OverallDamage)
-        self.FuelLevel = float(FuelLevel)
-        self.Team = str(Team)
-
-
-def create_chassis():
-    obj = Chassis(0.0)
-    return obj
-
-
-def create_front_wing():
-    obj = FrontWing(0.0)
-    return obj
-
-
-def create_rear_wing():
-    obj = RearWing(0.0)
-    return obj
-
-
-def create_body_aero():
-    obj = BodyAero(0.0)
-    return obj
-
-
-def create_aero_package():
-    obj = AeroPackage(create_front_wing(), create_rear_wing(), create_body_aero())
-    return obj
-
-
-def create_front_breaks():
-    obj = FrontBreaks(0.0, 0.0)
-    return obj
-
-
-def create_rear_breaks():
-    obj = RearBreaks(0.0, 0.0)
-    return obj
-
-
-def create_break_package():
-    obj = BreakPackage(create_front_breaks(), create_rear_breaks())
-    return obj
-
-
-def create_rear_tyres():
-    obj = RearTyres(0.0, 0.0)
-    return obj
-
-
-def create_front_tyres():
-    obj = FrontTyres(0.0, 0.0)
-    return obj
-
-
-def create_tyres_package():
-    obj = TyresPackage(create_front_tyres(), create_rear_tyres())
-    return obj
-
-
-def create_car():
-    obj = Car("",
-              create_chassis(),
-              create_break_package(),
-              create_aero_package(),
-              create_tyres_package(),
-              0.0,
-              0.0,
-              0.0,
-              "")
-    return obj
-
-
-def create_car_list():
-    car_list = []
-    x = 20
-    y = 0
-    while x > y:
-        car_list.append(create_car())
-        x -= 1
-
-    return car_list
-
-
-
