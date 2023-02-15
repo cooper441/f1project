@@ -4,7 +4,9 @@ import Car as cr
 
 teamList = tm.create_list("Resources\Teams.csv")
 driverList = dr.create_list("Resources\Drivers.csv")
-carList = cr.create_list("Resources\Car.csv")
+carList = cr.create_car_list()
+
+
 
 
 # def driver_to_team(l1, l2):
