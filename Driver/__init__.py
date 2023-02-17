@@ -13,6 +13,7 @@ class Driver:
         self.Racecraft = float(Racecraft)
         self.Awareness = float(Awareness)
         self.Pace = float(Pace)
+
     def __call__(self):
         return self
 
@@ -25,7 +26,6 @@ def create_list(file):
             driverList.append(Driver(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
         for i in driverList:
             i.Team = i.Team.strip()
-
 
         return driverList
 

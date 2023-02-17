@@ -1,6 +1,7 @@
 import Team as tm
 import Driver as dr
 from Car import Car as cr
+from Track import Track as tr
 
 teamList = tm.create_list("Resources\Teams.csv")
 driverList = dr.create_list("Resources\Drivers.csv")
@@ -42,4 +43,3 @@ def driver_to_car(driverList):
 
 
 driver_to_car(driverList)
-
