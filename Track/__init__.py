@@ -41,7 +41,6 @@ class Straight:
         return self
 
 
-
 test = Track("Silverston", "UK", 0, corners=Track.create_corner(), straight=Track.create_straight())
 
 print(test)

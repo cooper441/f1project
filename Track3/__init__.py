@@ -6,6 +6,7 @@ class Track:
     def __init__(self):
         self.car_position = {}  # key driver obj, value int pos in list of segments
         self.track_segments = []
+        self.name = ""
 
     def add_track_segment(self, segment):
         self.track_segments.append(segment)
@@ -59,14 +60,29 @@ def get_segment(list):
     return l2
 
 
-trackSeg = create_seg_list("Silverstone.csv")
-print(trackSeg)
+# trackSeg = create_seg_list("Silverstone.csv")
+#
+# # print(trackSeg)
+# # print(get_segment(trackSeg))
+#
+# test = Track()
+#
+# for segment in get_segment(trackSeg):
+#     test.add_track_segment(segment)
+#
+# # print(test.track_segments[11])
+# print(test)
 
-print(get_segment(trackSeg))
 
-test = Track()
+def create_track(CSV_file, name):
+    test = Track()
+    test.name = name
+    for segment in get_segment(create_seg_list(CSV_file)):
+        test.add_track_segment(segment)
 
-for segment in get_segment(trackSeg):
-    test.add_track_segment(segment)
+    return test
 
-print(test.track_segments[11])
+
+
+
+

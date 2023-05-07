@@ -18,14 +18,71 @@ class Car:
 
     def __call__(self):
         return self
+
+    # def create_chassis(self):
+    #     obj = Chassis(0.0)
+    #     return obj
+    #
+    #
+    # def create_front_wing(self):
+    #     obj = FrontWing(0.0)
+    #     return obj
+    #
+    #
+    # def create_rear_wing(self):
+    #     obj = RearWing(0.0)
+    #     return obj
+    #
+    #
+    # def create_body_aero(self):
+    #     obj = BodyAero(0.0)
+    #     return obj
+    #
+    #
+    # def create_aero_package(self):
+    #     obj = AeroPackage(self.create_front_wing(), self.create_rear_wing(), self.create_body_aero())
+    #     return obj
+    #
+    #
+    # def create_front_breaks(self):
+    #     obj = FrontBreaks(0.0, 0.0)
+    #     return obj
+    #
+    #
+    # def create_rear_breaks(self):
+    #     obj = RearBreaks(0.0, 0.0)
+    #     return obj
+    #
+    #
+    # def create_break_package(self):
+    #     obj = BreakPackage(self.create_front_breaks(), self.create_rear_breaks())
+    #     return obj
+    #
+    #
+    # def create_rear_tyres(self):
+    #     obj = RearTyres(0.0, 0.0)
+    #     return obj
+    #
+    #
+    # def create_front_tyres(self):
+    #     obj = FrontTyres(0.0, 0.0)
+    #     return obj
+    #
+    #
+    # def create_tyres_package(self):
+    #     obj = TyresPackage(self.create_front_tyres(), self.create_rear_tyres())
+    #     return obj
+
     @classmethod
     def create_chassis(self):
         obj = Chassis(0.0)
         return obj
+
     @classmethod
     def create_front_wing(self):
         obj = FrontWing(0.0)
         return obj
+
     @classmethod
     def create_rear_wing(self):
         obj = RearWing(0.0)
