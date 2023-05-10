@@ -4,7 +4,7 @@ import csv
 class Track:
 
     def __init__(self):
-        self.car_position = {}  # key driver obj, value int pos in list of segments
+        self.car_position = {}  # key car obj, value int pos in list of segments
         self.track_segments = []
         self.name = ""
 

@@ -11,9 +11,6 @@ class Team:
         return self
 
 
-
-
-
 def create_list(file):
     teamList = []
     with open(file, 'r') as f:
@@ -25,6 +22,4 @@ def create_list(file):
             i.Name = i.Name.strip()
             i.Nat = i.Nat.strip()
 
-
         return teamList
-

@@ -14,6 +14,7 @@ class ColouredText:
 
 teamList = tm.create_list("Resources\Teams.csv")
 driverList = dr.create_list("Resources\Drivers.csv")
+carList = []
 trackList = []
 
 
@@ -53,7 +54,7 @@ def driver_to_car(driverList):
     x = 0
     y = 20  # amount of cars
     while x < y:
-        create_car(driverList[x])
+        carList.append(create_car(driverList[x]))
         print(driverList[x].Abbrev + " is now assigned a car")
         x += 1
     print(ColouredText.GREEN + "All Cars have been created" + ColouredText.RESET)
@@ -68,32 +69,41 @@ trackList.append(test)
 print(ColouredText.GREEN + "Track has been created" + ColouredText.RESET)
 print(ColouredText.GREEN + "Setup complete" + ColouredText.RESET)
 
-def print_main_menu():
-    print(ColouredText.GREEN + "\n\n\n\n\nMain Menu:" + ColouredText.RESET)
-    print("1. View Drivers")
-    print("2. View Teams")
-    print("4. Add Custom Driver")
-    print("5. Add Custom Team")
-    print("6. Start")
-    print("7. Quit")
+# def main_menu():
+#     print(ColouredText.GREEN + "\n\n\n\n\nMain Menu:" + ColouredText.RESET)
+#     print("1. View Drivers")
+#     print("2. View Teams")
+#     print("4. Add Custom Driver")
+#     print("5. Add Custom Team")
+#     print("6. Start")
+#     print("7. Quit")
+#
+# # def return_menu():
+# #
+# #
+# #
+#
+#
+# def handle_input_main_menu(user_input):
+#     if user_input == "1":
+#         print("show a list of drivers")
+#         menu_handle(return_menu())
+#     elif user_input == "2":
+#         print("show a list of drivers")
+#         menu_handle(return_menu())
+#     elif user_input == "3":
+#         print("show a list of drivers")
+#         menu_handle(return_menu())
+#     elif user_input == "4":
+#         print("show a list of drivers")
+#         menu_handle(return_menu())
+#     else:
+#         print("Invalid input, please try again.")
+#
+# def menu_handle(menu):
+#     while True:
+#         menu
+#         user_input = input(ColouredText.YELLOW + "\nEnter your choice" + ColouredText.RESET)
+#         handle_input_main_menu(user_input)
 
-
-def handle_input(user_input):
-    if user_input == "1":
-        print("show a list of drivers")
-    elif user_input == "2":
-        print()
-    elif user_input == "3":
-        view_items()
-    elif user_input == "4":
-        print("Goodbye!")
-        exit()
-    else:
-        print("Invalid input, please try again.")
-
-
-while True:
-    print_main_menu()
-    user_input = input(ColouredText.YELLOW + "\nEnter your choice" + ColouredText.RESET)
-    handle_input
 
