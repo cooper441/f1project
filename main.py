@@ -1,6 +1,8 @@
 import setup
 import pygame
 import pygame_menu
+import logic
+from colors import *
 
 driver = setup.driverList[0]
 track = setup.trackList[0]
@@ -12,6 +14,13 @@ last_action_time = pygame.time.get_ticks()
 interval = 10
 main_menu = pygame_menu.Menu
 
+
+
+def select_color(color):
+    return (str(RGB.rgb_format(color)))
+
+print(type(select_color(CORNFLOWERBLUE)))
+print(select_color(CORNFLOWERBLUE))
 
 def display_time(start_time):
     font = pygame.font.Font(None, 36)
@@ -29,9 +38,11 @@ def display_time(start_time):
     return internal_time
 
 
-def display_text(text, size, position, screen):
+def display_text(text, size, position, screen, color):
+    c = select_color(color)
+    print(c)
     font = pygame.font.Font(pygame.font.get_default_font(), size)
-    text_surface = font.render(text, True, (0, 0, 0))
+    text_surface = font.render(text, True, (100, 149, 237))
     text_rect = text_surface.get_rect()
     text_rect.center = position
     screen.blit(text_surface, text_rect)
@@ -66,8 +77,12 @@ def start_the_game(*args):
     count_down(screen)
     player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
     start_time = pygame.time.get_ticks()
+    logic.start(selected_driver, track)
     while True:
         clock.tick_busy_loop(30) / 1000
+
+        #logic
+
 
         # Application events
         events = pygame.event.get()
@@ -101,7 +116,7 @@ def start_the_game(*args):
         display_time(start_time)
         display_text("Press ESC to stop and return to menu", 15,
                      (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                     screen)
+                     screen, color="chartreuse1")
 
         # flip() the display to put your work on screen
         pygame.display.flip()
@@ -113,13 +128,22 @@ def main_background() -> None:
     Function used by menus, draw on background while menu is active.
     """
 
-    screen.fill((128, 0, 128))
+    screen.fill((255, 255, 255))
+
+    if 'selected_driver' in globals():
+        display_text(f"Selected driver is {selected_driver.Driver.FirstName} {selected_driver.Driver.LastName}", 15,
+                     (screen.get_width() // 2, screen.get_height() // 2 - 350),
+                     screen, color=CORNFLOWERBLUE)
+    else:
+        display_text("You have not selected a driver", 15,
+                     (screen.get_width() // 2, screen.get_height() // 2 - 350),
+                     screen, color=CORNFLOWERBLUE)
 
 
 def set_driver(driver):
     global selected_driver
     selected_driver = driver
-    print(selected_driver)
+    print(selected_driver.Driver.Abbrev)
 
 
 def main():
@@ -141,31 +165,9 @@ def main():
     play_submenu = pygame_menu.Menu('Welcome', 400, 300,
                                     theme=pygame_menu.themes.THEME_BLUE)
 
-
-
-    #
-    # if selected_driver is not None:
-    #     display_text(f"Selected driver is {selected_driver.Driver.FirstName} + {selected_driver.Driver.LastName}", 15,
-    #                  (screen.get_width() // 2, screen.get_height() // 2 - 350),
-    #                  screen)
-    # else:
-    #     display_text("You have not selected a Driver", 15,
-    #                  (screen.get_width() // 2, screen.get_height() // 2 - 350),
-    #                  screen)
-    # if 'selected_driver' in globals():
-    #     display_text(f"Selected driver is {selected_driver.Driver.FirstName} {selected_driver.Driver.LastName}", 15,
-    #                  (screen.get_width() // 2, screen.get_height() // 2 - 350),
-    #                  screen)
-    # else:
-    #     display_text("You have not selected a driver", 15,
-    #                  (screen.get_width() // 2, screen.get_height() // 2 - 350),
-    #                  screen)
-
-
     for i in setup.carList:
         play_submenu.add.button(str(i.Driver.FirstName + " " + i.Driver.LastName),
                                 action=lambda driver=i: set_driver(driver))
-
 
     play_submenu.add.button('Return to main menu', pygame_menu.events.RESET)
 
@@ -175,7 +177,6 @@ def main():
     main_menu.add.button('Choose Driver', play_submenu)
     main_menu.add.button('Quit', pygame_menu.events.EXIT)
 
-
     while True:
 
         # Tick
@@ -184,11 +185,6 @@ def main():
         # Paint background
 
         main_background()
-        if "selected_driver" in globals():
-            print("Your selected driver is " + selected_driver.Driver.Abbrev)
-        else:
-            print("no selected driver")
-
 
         # Application events
         events = pygame.event.get()
