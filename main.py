@@ -2,25 +2,22 @@ import setup
 import pygame
 import pygame_menu
 import logic
+import game_clock
 from colors import *
 
+pygame.init()
 driver = setup.driverList[0]
 track = setup.trackList[0]
 car = setup.carList[1]
-
-clock = pygame.time.Clock()
-dt = 0
-last_action_time = pygame.time.get_ticks()
-interval = 10
-# main_menu = pygame_menu.Menu
+clock = game_clock.GameClock()
+screen = pygame.display.set_mode((1280, 720))
+main_menu = pygame_menu.Menu('Welcome', 400, 300,
+                             theme=pygame_menu.themes.THEME_BLUE)
+selected_driver = None
 
 
 def select_color(color):
     return tuple(RGB.rgb_format(color))
-
-#
-# print(type(select_color(CORNFLOWERBLUE)))
-# print(select_color(CORNFLOWERBLUE))
 
 
 def display_time(start_time):
@@ -39,56 +36,40 @@ def display_time(start_time):
     return internal_time
 
 
-def display_text(text, size, position, screen, color):
-
+def display_text(text, size, position, color):
     font = pygame.font.Font(pygame.font.get_default_font(), size)
     text_surface = font.render(text, True, select_color(color))
     text_rect = text_surface.get_rect()
     text_rect.center = position
     screen.blit(text_surface, text_rect)
-    pygame.display.flip()
 
 
-def count_down(screen):
+def count_down():
     for i in range(3, 0, -1):
         screen.fill((0, 0, 0))
-        display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), screen, ANTIQUEWHITE)
+        display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
         pygame.time.delay(100)
 
     screen.fill((0, 0, 0))
-    display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), screen, ANTIQUEWHITE)
+    display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
     pygame.time.delay(100)
 
 
-def set_difficulty(value, difficulty):
-    # Do the job here !
-    pass
-
-
-def start_the_game(*args):
+def start_the_game():
     try:
-        global main_menu
-        global screen
-        global clock
-        global selected_driver
-
         main_menu.disable()
         main_menu.full_reset()
-
 
         player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
         start_time = pygame.time.get_ticks()
         logic.start(selected_driver, track)
-        count_down(screen)
+        count_down()
 
         while True:
-            clock.tick_busy_loop(30) / 1000
+            clock.update()
 
-            # logic
-
-            # Application events
-            events = pygame.event.get()
-            for e in events:
+            events_game = pygame.event.get()
+            for e in events_game:
                 if e.type == pygame.QUIT:
                     exit()
                 elif e.type == pygame.KEYDOWN:
@@ -99,7 +80,7 @@ def start_the_game(*args):
                         return
 
             if main_menu.is_enabled():
-                main_menu.update(events)
+                main_menu.update(events_game)
 
             screen.fill("purple")
 
@@ -107,73 +88,48 @@ def start_the_game(*args):
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_w]:
-                player_pos.y -= 300 * dt
+                player_pos.y -= 300 * clock.dt
             if keys[pygame.K_s]:
-                player_pos.y += 300 * dt
+                player_pos.y += 300 * clock.dt
             if keys[pygame.K_a]:
-                player_pos.x -= 300 * dt
+                player_pos.x -= 300 * clock.dt
             if keys[pygame.K_d]:
-                player_pos.x += 300 * dt
+                player_pos.x += 300 * clock.dt
 
             display_time(start_time)
             display_text("Press ESC to stop and return to menu", 15,
                          (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                         screen, ANTIQUEWHITE)
+                         ANTIQUEWHITE)
 
-            # flip() the display to put your work on screen
             pygame.display.flip()
     except NameError:
         main_menu.enable()
         main_menu.full_reset()
         display_text("You have not selected a driver!", 60,
                      (screen.get_width() // 2, screen.get_height() // 2 - 200),
-                     screen, RED1)
+                     RED1)
         pygame.time.delay(3000)
 
 
-
-
 def main_background() -> None:
-    global screen
-    """
-    Function used by menus, draw on background while menu is active.
-    """
-
     screen.fill(select_color(CORNSILK3))
 
-    if 'selected_driver' in globals():
-        display_text(f"Selected driver is {selected_driver.Driver.FirstName} {selected_driver.Driver.LastName}", 15,
-                     (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                     screen, color=CORNFLOWERBLUE)
-    else:
+    if selected_driver is None:
         display_text("You have not selected a driver", 15,
-                     (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                     screen, color=CORNFLOWERBLUE)
+                     (screen.get_width() // 2, screen.get_height() // 2 - 350), color=CORNFLOWERBLUE)
+    else:
+        display_text(f"Selected driver is {selected_driver.Driver.FirstName} {selected_driver.Driver.LastName}", 15,
+                     (screen.get_width() // 2, screen.get_height() // 2 - 350), color=CORNFLOWERBLUE)
 
 
-def set_driver(driver):
+def set_driver(d):
     global selected_driver
-    selected_driver = driver
-    print(selected_driver.Driver.Abbrev)
+    selected_driver = d
     main_menu.enable()
     main_menu.full_reset()
 
 
-
 def main():
-    pygame.init()
-    global dt
-    global clock
-    global screen
-    global main_menu
-    global selected_driver
-
-    screen = pygame.display.set_mode((1280, 720))
-    clock = pygame.time.Clock()
-
-    main_menu = pygame_menu.Menu('Welcome', 400, 300,
-                                 theme=pygame_menu.themes.THEME_BLUE)
-
     submenu_theme = pygame_menu.themes.THEME_DEFAULT.copy()
     submenu_theme.widget_font_size = 15
     play_submenu = pygame_menu.Menu('Welcome', 400, 300,
@@ -181,37 +137,28 @@ def main():
 
     for i in setup.carList:
         play_submenu.add.button(str(i.Driver.FirstName + " " + i.Driver.LastName),
-                                action=lambda driver=i: set_driver(driver))
+                                action=lambda d=i: set_driver(d))
 
     play_submenu.add.button('Return to main menu', pygame_menu.events.RESET, font_color=select_color(CYAN4))
     print(type(play_submenu))
 
     main_menu.add.button('Start',
-                         start_the_game,
+                         lambda widget: start_the_game(),
                          pygame.font.Font(pygame_menu.font.FONT_FRANCHISE, 30))
     main_menu.add.button('Choose Driver', play_submenu)
     main_menu.add.button('Quit', pygame_menu.events.EXIT)
 
     while True:
+        clock.update()
 
-        # Tick
-        dt = clock.tick_busy_loop(30) / 1000
-
-        # Paint background
-
-        main_background()
-
-        # Application events
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 exit()
 
-        # Main menu
         if main_menu.is_enabled():
             main_menu.mainloop(screen, main_background)
 
-        # Flip surface
         pygame.display.flip()
 
 
