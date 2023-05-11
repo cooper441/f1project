@@ -12,15 +12,16 @@ clock = pygame.time.Clock()
 dt = 0
 last_action_time = pygame.time.get_ticks()
 interval = 10
-main_menu = pygame_menu.Menu
-
+# main_menu = pygame_menu.Menu
 
 
 def select_color(color):
-    return (str(RGB.rgb_format(color)))
+    return tuple(RGB.rgb_format(color))
 
-print(type(select_color(CORNFLOWERBLUE)))
-print(select_color(CORNFLOWERBLUE))
+#
+# print(type(select_color(CORNFLOWERBLUE)))
+# print(select_color(CORNFLOWERBLUE))
+
 
 def display_time(start_time):
     font = pygame.font.Font(None, 36)
@@ -39,10 +40,9 @@ def display_time(start_time):
 
 
 def display_text(text, size, position, screen, color):
-    c = select_color(color)
-    print(c)
+
     font = pygame.font.Font(pygame.font.get_default_font(), size)
-    text_surface = font.render(text, True, (100, 149, 237))
+    text_surface = font.render(text, True, select_color(color))
     text_rect = text_surface.get_rect()
     text_rect.center = position
     screen.blit(text_surface, text_rect)
@@ -52,11 +52,11 @@ def display_text(text, size, position, screen, color):
 def count_down(screen):
     for i in range(3, 0, -1):
         screen.fill((0, 0, 0))
-        display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), screen)
+        display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), screen, ANTIQUEWHITE)
         pygame.time.delay(100)
 
     screen.fill((0, 0, 0))
-    display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), screen)
+    display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), screen, ANTIQUEWHITE)
     pygame.time.delay(100)
 
 
@@ -66,60 +66,71 @@ def set_difficulty(value, difficulty):
 
 
 def start_the_game(*args):
-    global main_menu
-    global screen
-    global clock
-    global selected_driver
+    try:
+        global main_menu
+        global screen
+        global clock
+        global selected_driver
 
-    main_menu.disable()
-    main_menu.full_reset()
-
-    count_down(screen)
-    player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-    start_time = pygame.time.get_ticks()
-    logic.start(selected_driver, track)
-    while True:
-        clock.tick_busy_loop(30) / 1000
-
-        #logic
+        main_menu.disable()
+        main_menu.full_reset()
 
 
-        # Application events
-        events = pygame.event.get()
-        for e in events:
-            if e.type == pygame.QUIT:
-                exit()
-            elif e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_ESCAPE:
-                    main_menu.enable()
+        player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+        start_time = pygame.time.get_ticks()
+        logic.start(selected_driver, track)
+        count_down(screen)
 
-                    # Quit this function, then skip to loop of main-menu on line 221
-                    return
+        while True:
+            clock.tick_busy_loop(30) / 1000
 
-        if main_menu.is_enabled():
-            main_menu.update(events)
+            # logic
 
-        screen.fill("purple")
+            # Application events
+            events = pygame.event.get()
+            for e in events:
+                if e.type == pygame.QUIT:
+                    exit()
+                elif e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        main_menu.enable()
 
-        pygame.draw.circle(screen, "red", player_pos, 40)
+                        # Quit this function, then skip to loop of main-menu on line 221
+                        return
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            player_pos.y -= 300 * dt
-        if keys[pygame.K_s]:
-            player_pos.y += 300 * dt
-        if keys[pygame.K_a]:
-            player_pos.x -= 300 * dt
-        if keys[pygame.K_d]:
-            player_pos.x += 300 * dt
+            if main_menu.is_enabled():
+                main_menu.update(events)
 
-        display_time(start_time)
-        display_text("Press ESC to stop and return to menu", 15,
-                     (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                     screen, color="chartreuse1")
+            screen.fill("purple")
 
-        # flip() the display to put your work on screen
-        pygame.display.flip()
+            pygame.draw.circle(screen, "red", player_pos, 40)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_w]:
+                player_pos.y -= 300 * dt
+            if keys[pygame.K_s]:
+                player_pos.y += 300 * dt
+            if keys[pygame.K_a]:
+                player_pos.x -= 300 * dt
+            if keys[pygame.K_d]:
+                player_pos.x += 300 * dt
+
+            display_time(start_time)
+            display_text("Press ESC to stop and return to menu", 15,
+                         (screen.get_width() // 2, screen.get_height() // 2 - 350),
+                         screen, ANTIQUEWHITE)
+
+            # flip() the display to put your work on screen
+            pygame.display.flip()
+    except NameError:
+        main_menu.enable()
+        main_menu.full_reset()
+        display_text("You have not selected a driver!", 60,
+                     (screen.get_width() // 2, screen.get_height() // 2 - 200),
+                     screen, RED1)
+        pygame.time.delay(3000)
+
+
 
 
 def main_background() -> None:
@@ -128,7 +139,7 @@ def main_background() -> None:
     Function used by menus, draw on background while menu is active.
     """
 
-    screen.fill((255, 255, 255))
+    screen.fill(select_color(CORNSILK3))
 
     if 'selected_driver' in globals():
         display_text(f"Selected driver is {selected_driver.Driver.FirstName} {selected_driver.Driver.LastName}", 15,
@@ -144,6 +155,9 @@ def set_driver(driver):
     global selected_driver
     selected_driver = driver
     print(selected_driver.Driver.Abbrev)
+    main_menu.enable()
+    main_menu.full_reset()
+
 
 
 def main():
@@ -169,7 +183,8 @@ def main():
         play_submenu.add.button(str(i.Driver.FirstName + " " + i.Driver.LastName),
                                 action=lambda driver=i: set_driver(driver))
 
-    play_submenu.add.button('Return to main menu', pygame_menu.events.RESET)
+    play_submenu.add.button('Return to main menu', pygame_menu.events.RESET, font_color=select_color(CYAN4))
+    print(type(play_submenu))
 
     main_menu.add.button('Start',
                          start_the_game,
