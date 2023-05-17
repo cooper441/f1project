@@ -15,7 +15,7 @@ clock = game_clock.GameClock()
 screen = pygame.display.set_mode((1280, 720))
 main_menu = pygame_menu.Menu('Welcome', 400, 300,
                              theme=pygame_menu.themes.THEME_BLUE)
-selected_driver = setup.carList[1]
+selected_driver = None
 
 
 def select_color(color):
@@ -50,25 +50,26 @@ def count_down():
     for i in range(3, 0, -1):
         screen.fill((0, 0, 0))
         display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
-        pygame.time.delay(100)
+        pygame.display.flip()
+        pygame.time.delay(1000)
 
     screen.fill((0, 0, 0))
     display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
-    pygame.time.delay(100)
+    pygame.display.flip()
+    pygame.time.delay(1000)
 
 
 def start_the_game():
-    track.car_position = {selected_driver: 0}
-
     try:
+        print(selected_driver.Driver.LastName)
         main_menu.disable()
         main_menu.full_reset()
 
         player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-        start_time = pygame.time.get_ticks()
-        logic.start(selected_driver, track)
-        count_down()
 
+        count_down()
+        # track.car_position = {selected_driver: 0}
+        start_time = pygame.time.get_ticks()
         while True:
             clock.update()
 
@@ -103,31 +104,30 @@ def start_the_game():
                          (screen.get_width() // 2, screen.get_height() // 2 - 350),
                          ANTIQUEWHITE)
 
-            track.car_position[selected_driver]
-
-            elapsed_time = pygame.time.get_ticks() - start_time
-
-            minutes, remainder = divmod(elapsed_time, 60000)  # Convert milliseconds to minutes and remainder
-            seconds, ms = divmod(remainder, 1000)  # Convert remainder to seconds and milliseconds
-            time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
-
-            if track.car_position[selected_driver] < track.total_length:
-                increment_value = 1
-                track.car_position[selected_driver] += increment_value
-                print(track.car_position[selected_driver])
-            else:
-                print("finished" + " in " + str(time_display))
-                main_menu.enable()
-                break
+            # elapsed_time = pygame.time.get_ticks() - start_time
+            #
+            # minutes, remainder = divmod(elapsed_time, 60000)  # Convert milliseconds to minutes and remainder
+            # seconds, ms = divmod(remainder, 1000)  # Convert remainder to seconds and milliseconds
+            # time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
+            #
+            # if track.car_position[selected_driver] < track.total_length:
+            #     increment_value = 1
+            #     track.car_position[selected_driver] += increment_value
+            #     print(track.car_position[selected_driver])
+            # else:
+            #     print("finished" + " in " + str(time_display))
+            #     main_menu.enable()
+            #     break
 
             pygame.display.flip()
-    except NameError:
-        main_menu.enable()
-        main_menu.full_reset()
+    except AttributeError:
         display_text("You have not selected a driver!", 60,
                      (screen.get_width() // 2, screen.get_height() // 2 - 200),
                      RED1)
+        pygame.display.flip()
         pygame.time.delay(3000)
+        main_menu.enable()
+        main_menu.full_reset()
 
 
 def main_background() -> None:
@@ -149,6 +149,8 @@ def set_driver(d):
 
 
 def main():
+    main_menu.enable()
+
     submenu_theme = pygame_menu.themes.THEME_DEFAULT.copy()
     submenu_theme.widget_font_size = 15
     play_submenu = pygame_menu.Menu('Welcome', 400, 300,
@@ -159,15 +161,12 @@ def main():
                                 action=lambda d=i: set_driver(d))
 
     play_submenu.add.button('Return to main menu', pygame_menu.events.RESET, font_color=select_color(CYAN4))
-    print(type(play_submenu))
 
     main_menu.add.button('Start',
                          lambda widget: start_the_game(),
                          pygame.font.Font(pygame_menu.font.FONT_FRANCHISE, 30))
     main_menu.add.button('Choose Driver', play_submenu)
     main_menu.add.button('Quit', pygame_menu.events.EXIT)
-
-    print(track.total_length)
 
     while True:
         clock.update()
@@ -185,23 +184,23 @@ def main():
 
 main()
 
-start_time = time.perf_counter()
-elapsed_time = 0
-track.car_position = {selected_driver: 0}
-simulation_speed = 2  # Increase this value to make the simulation run faster
-
-while True:
-    elapsed_time = time.perf_counter() - start_time
-
-    if track.car_position[selected_driver] < track.total_length:
-        increment_value = 1
-        track.car_position[selected_driver] += increment_value
-    else:
-        formatted_time = str(datetime.timedelta(seconds=int(elapsed_time)))
-        print("finished" + " in " + str(formatted_time))
-        break
-
-    time.sleep(0.10)  # Pause for 0.10 seconds (real-time)
-
-    # Adjust the elapsed time to account for the simulation speed
-    elapsed_time *= simulation_speed
+# start_time = time.perf_counter()
+# elapsed_time = 0
+# track.car_position = {selected_driver: 0}
+# simulation_speed = 2  # Increase this value to make the simulation run faster
+#
+# while True:
+#     elapsed_time = time.perf_counter() - start_time
+#
+#     if track.car_position[selected_driver] < track.total_length:
+#         increment_value = 1
+#         track.car_position[selected_driver] += increment_value
+#     else:
+#         formatted_time = str(datetime.timedelta(seconds=int(elapsed_time)))
+#         print("finished" + " in " + str(formatted_time))
+#         break
+#
+#     time.sleep(0.10)  # Pause for 0.10 seconds (real-time)
+#
+#     # Adjust the elapsed time to account for the simulation speed
+#     elapsed_time *= simulation_speed
