@@ -1,7 +1,6 @@
 import pygame
 
 
-
 class GameClock:
     def __init__(self):
         self.clock = pygame.time.Clock()
@@ -10,5 +9,3 @@ class GameClock:
 
     def update(self):
         self.dt = self.clock.tick_busy_loop(30) / 1000
-
-

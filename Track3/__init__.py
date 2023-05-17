@@ -7,6 +7,7 @@ class Track:
         self.car_position = {}  # key car obj, value int pos in list of segments
         self.track_segments = []
         self.name = ""
+        self.total_length = 0
 
     def add_track_segment(self, segment):
         self.track_segments.append(segment)
@@ -79,8 +80,11 @@ def create_track(CSV_file, name):
     test.name = name
     for segment in get_segment(create_seg_list(CSV_file)):
         test.add_track_segment(segment)
+        test.total_length += segment.length
+    test.total_length = test.total_length * 1000
 
     return test
+
 
 
 
