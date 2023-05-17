@@ -16,6 +16,8 @@ screen = pygame.display.set_mode((1280, 720))
 main_menu = pygame_menu.Menu('Welcome', 400, 300,
                              theme=pygame_menu.themes.THEME_BLUE)
 selected_driver = None
+time_scale = 10
+SIMULATED_TIME_SCALE = 10
 
 
 def select_color(color):
@@ -51,15 +53,17 @@ def count_down():
         screen.fill((0, 0, 0))
         display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
         pygame.display.flip()
-        pygame.time.delay(1000)
+        pygame.time.delay(1)
 
     screen.fill((0, 0, 0))
     display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
     pygame.display.flip()
-    pygame.time.delay(1000)
+    pygame.time.delay(1)
 
 
-def start_the_game():
+
+
+def start_the_game(sim_state: bool):
     try:
         print(selected_driver.Driver.LastName)
         main_menu.disable()
@@ -68,64 +72,75 @@ def start_the_game():
         player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
         count_down()
-        # track.car_position = {selected_driver: 0}
+        track.car_position = {selected_driver: 0}
         start_time = pygame.time.get_ticks()
+
+        simulated_time = 0
+
         while True:
-            clock.update()
+            if sim_state:
+                simulated_time += 1 / SIMULATED_TIME_SCALE  # simulated time moves slower
+                if track.car_position[selected_driver] <= track.total_length:
+                    increment_value = 5 * SIMULATED_TIME_SCALE  # car moves faster in simulated state
+                    track.car_position[selected_driver] += increment_value
+                else:
+                    minutes, remainder = divmod(simulated_time,
+                                                60000)  # Convert simulated time to minutes and remainder
+                    seconds, ms = divmod(remainder, 1000)  # Convert remainder to simulated seconds and milliseconds
+                    time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
+                    print("finished" + " in " + str(time_display))
+                    main_menu.enable()
+                    break
+            else:
+                clock.update()
 
-            events_game = pygame.event.get()
-            for e in events_game:
-                if e.type == pygame.QUIT:
-                    exit()
-                elif e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_ESCAPE:
-                        main_menu.enable()
-                        return
+                events_game = pygame.event.get()
+                for e in events_game:
+                    if e.type == pygame.QUIT:
+                        exit()
+                    elif e.type == pygame.KEYDOWN:
+                        if e.key == pygame.K_ESCAPE:
+                            main_menu.enable()
+                            return
 
-            if main_menu.is_enabled():
-                main_menu.update(events_game)
+                if main_menu.is_enabled():
+                    main_menu.update(events_game)
 
-            screen.fill("purple")
+                screen.fill("purple")
 
-            pygame.draw.circle(screen, "red", player_pos, 40)
+                pygame.draw.circle(screen, "red", player_pos, 40)
 
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_w]:
-                player_pos.y -= 300 * clock.dt
-            if keys[pygame.K_s]:
-                player_pos.y += 300 * clock.dt
-            if keys[pygame.K_a]:
-                player_pos.x -= 300 * clock.dt
-            if keys[pygame.K_d]:
-                player_pos.x += 300 * clock.dt
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_w]:
+                    player_pos.y -= 300 * clock.dt
+                if keys[pygame.K_s]:
+                    player_pos.y += 300 * clock.dt
+                if keys[pygame.K_a]:
+                    player_pos.x -= 300 * clock.dt
+                if keys[pygame.K_d]:
+                    player_pos.x += 300 * clock.dt
 
-            display_time(start_time)
-            display_text("Press ESC to stop and return to menu", 15,
-                         (screen.get_width() // 2, screen.get_height() // 2 - 350),
-                         ANTIQUEWHITE)
+                display_time(start_time)
+                display_text("Press ESC to stop and return to menu", 15,
+                             (screen.get_width() // 2, screen.get_height() // 2 - 350),
+                             ANTIQUEWHITE)
 
-            # elapsed_time = pygame.time.get_ticks() - start_time
-            #
-            # minutes, remainder = divmod(elapsed_time, 60000)  # Convert milliseconds to minutes and remainder
-            # seconds, ms = divmod(remainder, 1000)  # Convert remainder to seconds and milliseconds
-            # time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
-            #
-            # if track.car_position[selected_driver] < track.total_length:
-            #     increment_value = 1
-            #     track.car_position[selected_driver] += increment_value
-            #     print(track.car_position[selected_driver])
-            # else:
-            #     print("finished" + " in " + str(time_display))
-            #     main_menu.enable()
-            #     break
+                elapsed_time = pygame.time.get_ticks() - start_time
 
-            pygame.display.flip()
+                minutes, remainder = divmod(elapsed_time, 60000)  # Convert milliseconds to minutes and remainder
+                seconds, ms = divmod(remainder, 1000)  # Convert remainder to seconds and milliseconds
+                time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
+
+                pygame.display.flip()
+
+
+
     except AttributeError:
         display_text("You have not selected a driver!", 60,
                      (screen.get_width() // 2, screen.get_height() // 2 - 200),
                      RED1)
         pygame.display.flip()
-        pygame.time.delay(3000)
+        pygame.time.delay(1)
         main_menu.enable()
         main_menu.full_reset()
 
@@ -163,7 +178,7 @@ def main():
     play_submenu.add.button('Return to main menu', pygame_menu.events.RESET, font_color=select_color(CYAN4))
 
     main_menu.add.button('Start',
-                         lambda widget: start_the_game(),
+                         lambda widget: start_the_game(True),
                          pygame.font.Font(pygame_menu.font.FONT_FRANCHISE, 30))
     main_menu.add.button('Choose Driver', play_submenu)
     main_menu.add.button('Quit', pygame_menu.events.EXIT)
