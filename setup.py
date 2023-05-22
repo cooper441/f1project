@@ -1,7 +1,7 @@
 import Team as tm
 import Driver as dr
 import Car as cr
-import Track3 as tr
+import Track as tr
 
 
 class ColouredText:

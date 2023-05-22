@@ -1,26 +1,20 @@
+import csv
+
+
 class Track:
-    cornersList = []
 
-    def __init__(self, name, location, length, corners, straight):
-        self.name = str(name)
-        self.location = str(location)
-        self.length = float(length)
-        self.corners = corners
-        Track.cornersList.append(corners)
-        self.straight = straight()
+    def __init__(self):
+        self.car_position = {}  # key car obj, value int pos in list of segments
+        self.track_segments = []
+        self.name = ""
+        self.total_length = 0
+        self.current_segment = None
 
-    def __call__(self):
-        return self
+    def add_track_segment(self, segment):
+        self.track_segments.append(segment)
 
-    @classmethod
-    def create_corner(self):
-        obj = Corner(0, 0, 0, "")
-        return obj
-
-    @classmethod
-    def create_straight(self):
-        obj = Straight(0, 0, 0)
-        return obj
+        if self.current_segment is None:
+            self.current_segment = self.track_segments[0]
 
 
 class Corner:
@@ -37,10 +31,59 @@ class Straight:
         self.brakingDifficulty = float(brakingDifficulty)
         self.overtakeBrakingDifficulty = float(overtakeBrakingDifficulty)
 
-    def __call__(self):
-        return self
+
+def create_seg_list(file):
+    seg_list = []
+    with open(file, "r") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            seg_list.append(row)
+
+    return seg_list
 
 
-test = Track("Silverston", "UK", 0, corners=Track.create_corner(), straight=Track.create_straight())
+def get_segment(lst):
+    segment_list = []
+    for row in lst:
+        if row[1] == "Straight":
+            segment = Straight(float(row[3]) * 1000, 0, 0)
+        elif row[1] == "Corner":
+            segment = Corner(0, 0, float(row[3]) * 1000, row[2])
+        else:
+            # Handle the case when the segment type is unknown or invalid
+            raise ValueError("Unknown segment type: " + row[1])
 
-print(test)
+        segment_list.append(segment)
+
+    return segment_list
+
+
+# trackSeg = create_seg_list("Silverstone.csv")
+#
+# # print(trackSeg)
+# # print(get_segment(trackSeg))
+#
+# test = Track()
+#
+# for segment in get_segment(trackSeg):
+#     test.add_track_segment(segment)
+#
+# # print(test.track_segments[11])
+# print(test)
+
+
+def create_track(CSV_file, name):
+    test = Track()
+    test.name = name
+    for segment in get_segment(create_seg_list(CSV_file)):
+        test.add_track_segment(segment)
+        test.total_length += segment.length
+
+
+    return test
+
+
+
+
+
+
