@@ -3,10 +3,9 @@ import pygame
 import pygame_menu
 import Track
 import game_clock
-import time
-import datetime
 from colors import *
 
+# Declaring variables
 pygame.init()
 driver = setup.driverList[0]
 track = setup.trackList[0]
@@ -16,13 +15,13 @@ screen = pygame.display.set_mode((1280, 720))
 main_menu = pygame_menu.Menu('Welcome', 800, 600,
                              theme=pygame_menu.themes.THEME_BLUE)
 main_menu.add.text_input('Number of Laps: ', default='1', onchange=lambda x: set_number_of_laps(x))
-
 selected_driver = None
 time_scale = 10
 SIMULATED_TIME_SCALE = 10
 laps_to_complete = 1
 
 
+# Function to set colour
 def select_color(color):
     return tuple(RGB.rgb_format(color))
 
@@ -71,19 +70,16 @@ def display_multiline_text(text, size, position, color, line_spacing=1.5):
 
     font = pygame.font.Font(pygame.font.get_default_font(), size)
 
-    # Break words into multiple lines
     for word in words:
         temp_line = lines[line_index] + ' ' + word
         text_surface = font.render(temp_line, True, select_color(color))
 
-        # If line is too long, start a new line
         if text_surface.get_width() > screen.get_width() - 40:  # 40 is for a margin on both sides
             lines.append(word)
             line_index += 1
         else:
             lines[line_index] = temp_line
 
-    # Display each line
     for index, line in enumerate(lines):
         text_surface = font.render(line, True, select_color(color))
         text_rect = text_surface.get_rect()
@@ -98,31 +94,28 @@ def display_fuel(fuel_level):
     text = font.render(f"Fuel: ", True, (0, 0, 0))
     screen.blit(text, (20, 140))
 
-    # Bar dimensions
     bar_width = 100
     bar_height = 10
 
-    # Calculate fuel percentage
     fuel_percentage = fuel_level / 100
 
-    # Draw the background of the bar
     pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(80, 140, bar_width, bar_height))
 
-    # Draw the fuel level on top of the background
     pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(80, 140, fuel_percentage * bar_width, bar_height))
 
 
+# Displays a countdown
 def count_down():
     for i in range(3, 0, -1):
         screen.fill((0, 0, 0))
         display_text(str(i), 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
         pygame.display.flip()
-        pygame.time.delay(1)
+        pygame.time.delay(1000)
 
     screen.fill((0, 0, 0))
     display_text("START", 72, (screen.get_width() // 2, screen.get_height() // 2), ANTIQUEWHITE)
     pygame.display.flip()
-    pygame.time.delay(1)
+    pygame.time.delay(1000)
 
 
 def change_attribute(d, attr, new_value):
@@ -168,15 +161,15 @@ def create_driver_menu(d):
 def start_the_game(sim_state: bool, menu_to_disable=None):
     global laps_to_complete
     push_level = 5
-    base_increment_value = 10
+    base_increment_value = 1
     base_fuel_consumption = 0.0025
 
     increment_value = base_increment_value
     fuel_consumption = base_fuel_consumption
 
     try:
-        car_image = pygame.image.load('racecar.png').convert_alpha()
-        car_image = pygame.transform.scale(car_image, (50, 50))
+        car_image = pygame.image.load('Resources/racecar.png').convert_alpha()
+        car_image = pygame.transform.scale(car_image, (400, 150))
         car_image_rect = car_image.get_rect()
         car_image_rect.center = (screen.get_width() // 2, screen.get_height() // 2)
 
@@ -204,7 +197,7 @@ def start_the_game(sim_state: bool, menu_to_disable=None):
         current_segment = track.track_segments[current_segment_index]
         print(current_segment.length)
 
-        processed_segment = False  # Flag variable to track whether the current segment has been processed
+        processed_segment = False
 
         while True:
             if sim_state:
@@ -233,7 +226,6 @@ def start_the_game(sim_state: bool, menu_to_disable=None):
 
                         current_segment_index = (current_segment_index + 1) % len(track.track_segments)
                         current_segment = track.track_segments[current_segment_index]
-
 
                     else:
                         processed_segment = False
@@ -294,20 +286,12 @@ def start_the_game(sim_state: bool, menu_to_disable=None):
                              (screen.get_width() // 2, screen.get_height() // 2 + 200),
                              ANTIQUEWHITE)
 
-                instructions = "Use UP and DOWN arrow keys to change push level and speed.\nHigher push level " \
+                instructions = "Use UP and DOWN arrow keys to change push level and speed. Higher push level " \
                                "increases speed and fuel consumption."
                 display_multiline_text(instructions, 18, (screen.get_width() // 2, screen.get_height() - 100),
                                        ANTIQUEWHITE)
 
-                elapsed_time = pygame.time.get_ticks() - start_time
-
-                minutes, remainder = divmod(elapsed_time, 60000)  # Convert milliseconds to minutes and remainder
-                seconds, ms = divmod(remainder, 1000)  # Convert remainder to seconds and milliseconds
-                time_display = f"{minutes:02}:{seconds:02}.{ms // 10:02}"  # Format the time string
-
                 pygame.display.flip()
-
-
 
     except AttributeError:
         display_text("You have not selected a driver!", 60,
@@ -388,4 +372,3 @@ def main():
 
 
 main()
-

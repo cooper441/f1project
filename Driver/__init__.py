@@ -29,30 +29,3 @@ def create_list(file):
 
         return driverList
 
-# def create_driver_df(csv):
-#     # Creates column names for driver DF
-#     columnNames = ["FirstName", "LastName", "Abbrev", "Nat", "Team", "Rating", "Experience", "Racecraft", "Awareness",
-#                    "Pace"]
-#     # Imports csv data with the correct column names
-#     drivers = pd.read_csv(csv, names=columnNames)
-#
-#     # Strips whitespace from every data entry
-#     for i in drivers.columns:
-#         # checking datatype of each column
-#         if drivers[i].dtype == 'object':
-#             # applying strip function on column
-#             drivers[i] = drivers[i].map(str.strip)
-#         else:
-#             # if condn. is False then it will do nothing.
-#             pass
-#     # Sorts correct data types to columns
-#     drivers = drivers.astype(
-#         {"FirstName": "category", "LastName": "category", "Abbrev": "category", "Nat": "category", "Team": "object"})
-#
-#     return drivers
-#
-#
-# def showAllDrivers(list):
-#     for x in list:
-#         print(x.FirstName + " " + x.LastName + " " + x.Abbrev + " " + x.Nat + " " + x.Team + " " + str(x.Rating)
-#               + " " + str(x.Experience) + " " + str(x.Racecraft) + " " + str(x.Awareness) + " " + str(x.Pace))
