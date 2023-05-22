@@ -28,7 +28,6 @@ def driver_to_team(l1, l2):
 
     print(ColouredText.GREEN + "All default Drivers are now assigned to a Team" + ColouredText.RESET)
 
-    # add else for error
 
 
 driver_to_team(driverList, teamList)
@@ -68,42 +67,4 @@ trackList.append(test)
 
 print(ColouredText.GREEN + "Track has been created" + ColouredText.RESET)
 print(ColouredText.GREEN + "Setup complete" + ColouredText.RESET)
-
-# def main_menu():
-#     print(ColouredText.GREEN + "\n\n\n\n\nMain Menu:" + ColouredText.RESET)
-#     print("1. View Drivers")
-#     print("2. View Teams")
-#     print("4. Add Custom Driver")
-#     print("5. Add Custom Team")
-#     print("6. Start")
-#     print("7. Quit")
-#
-# # def return_menu():
-# #
-# #
-# #
-#
-#
-# def handle_input_main_menu(user_input):
-#     if user_input == "1":
-#         print("show a list of drivers")
-#         menu_handle(return_menu())
-#     elif user_input == "2":
-#         print("show a list of drivers")
-#         menu_handle(return_menu())
-#     elif user_input == "3":
-#         print("show a list of drivers")
-#         menu_handle(return_menu())
-#     elif user_input == "4":
-#         print("show a list of drivers")
-#         menu_handle(return_menu())
-#     else:
-#         print("Invalid input, please try again.")
-#
-# def menu_handle(menu):
-#     while True:
-#         menu
-#         user_input = input(ColouredText.YELLOW + "\nEnter your choice" + ColouredText.RESET)
-#         handle_input_main_menu(user_input)
-
 
