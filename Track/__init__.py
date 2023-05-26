@@ -50,26 +50,12 @@ def get_segment(lst):
         elif row[1] == "Corner":
             segment = Corner(0, 0, float(row[3]) * 1000, row[2])
         else:
-            # Handle the case when the segment type is unknown or invalid
+
             raise ValueError("Unknown segment type: " + row[1])
 
         segment_list.append(segment)
 
     return segment_list
-
-
-# trackSeg = create_seg_list("Silverstone.csv")
-#
-# # print(trackSeg)
-# # print(get_segment(trackSeg))
-#
-# test = Track()
-#
-# for segment in get_segment(trackSeg):
-#     test.add_track_segment(segment)
-#
-# # print(test.track_segments[11])
-# print(test)
 
 
 def create_track(CSV_file, name):
@@ -79,11 +65,4 @@ def create_track(CSV_file, name):
         test.add_track_segment(segment)
         test.total_length += segment.length
 
-
     return test
-
-
-
-
-
-
