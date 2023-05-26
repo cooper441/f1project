@@ -195,7 +195,7 @@ def start_the_game(sim_state: bool, menu_to_disable=None):
 
         current_segment_index = 0
         current_segment = track.track_segments[current_segment_index]
-        print(current_segment.length)
+        # print(current_segment.length)
 
         processed_segment = False
 
@@ -298,7 +298,7 @@ def start_the_game(sim_state: bool, menu_to_disable=None):
                      (screen.get_width() // 2, screen.get_height() // 2 - 200),
                      RED1)
         pygame.display.flip()
-        pygame.time.delay(1)
+        pygame.time.delay(1500)
         main_menu.enable()
         main_menu.full_reset()
 
