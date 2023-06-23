@@ -7,8 +7,8 @@ class Team:
         self.Nat = str(Nat)
         self.PerformanceImpact = float(PerformanceImpact)
 
-
-
+    def __call__(self):
+        return self
 
 
 def create_list(file):
@@ -22,6 +22,4 @@ def create_list(file):
             i.Name = i.Name.strip()
             i.Nat = i.Nat.strip()
 
-
         return teamList
-
